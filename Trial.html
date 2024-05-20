@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Tracking</title>
+<link rel="stylesheet" href="styles.css">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+crossorigin=""/>
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+crossorigin=""></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #130232; /* Light gray background */
+}
+
+header {
+    background-color: #130232;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.navbar {
+    background-color: #130232;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.navbar ul li a:hover {
+    color: #FFFFFF; /* Change color on hover */
+}
+
+.container {
+    max-width: 1200px; /* Limit container width */
+    margin: 0 auto; /* Center container */
+    padding: 20px;
+}
+
+.section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #130232; /* White background */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.section h2 {
+    margin-top: 0;
+    color:#FFFFFF;
+}
+
+.section p {
+    margin-bottom: 10px;
+    color: #FFFFFF;
+}
+
+.section form {
+    max-width: 400px;
+    margin: auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #FFFFFF;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #bfb4f9;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth color transition */
+}
+
+button:hover {
+    background-color: #bfb4f9; /* Darker blue on hover */
+}
+
+.map-section {
+    height: 400px; /* Increase map section height */
+}
+
+.map-container {
+    height: 80%; /* Occupy full height of map container */
+}
+
+/* Add more specific styles for other sections as needed */
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Bus Tracking and Booking System</h1>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="#map-section" class="nav-link">Map</a></li>
+        <li><a href="#booking-section" class="nav-link">Book Ticket</a></li>
+        <li><a href="#wallet-section" class="nav-link">Wallet</a></li>
+        <li><a href="#tracking-section" class="nav-link">Track Bus</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <section id="map-section" class="section map-section">
+        <h2>Map</h2> Map
+        <div id="map" class="map-container"></div>
+        <a href="https://maps.itspl.net/infinity/geo-location-services/PNR.aspx">
+        </a>
+    </section>
+
+    <title>Booking Form</title>
+    <style>
+        .section {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .booking-form, .payment-section {
+            max-width: 400px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color:#bfb4f9(235, 58%, 87%);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button[type="submit"] {
+            background-color: #bfb4f9;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Styles for h2 heading */
+h2 {
+    color: #FFFFFF; /* Black color for heading */
+    font-size: 24px; /* Adjust font size as needed */
+    margin-bottom: 10px; /* Add space below the heading */
+}
+
+/* Styles for unordered list */
+ul {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+}
+
+/* Styles for list items */
+li {
+    margin-bottom: 5px; /* Add space between list items */
+    color: #FFFFFF; /* Dark gray color for list items */
+    font-size: 18px; /* Adjust font size as needed */
+    line-height: 1.5; /* Set line height for better readability */
+}
+#location {
+    margin-top: 10px; /* Add space above the location container */
+    padding: 10px; /* Add padding */
+    background-color: #f9f9f9; /* Light gray background */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add border radius */
+    font-size: 16px; /* Adjust font size as needed */
+}
+
+    </style>
+</head>
+<body>
+    <section id="booking-section" class="section booking-section">
+        <div class="booking-form">
+            <h2>Book Your Ticket</h2>
+            <form id="ticket-booking">
+                <label for="From">From:</label>
+                <input type="text" id="From" required>
+                <br>
+                <label for="To">To:</label>
+                <input type="text" id="To" required>
+                <br>
+                <label for="NumberOfPersons">Number of Persons:</label>
+                <input type="number" id="NumberOfPersons" required>
+                <button type="button" id="calculate-fare">Calculate Total Fare</button>
+                <label for="TotalFare">Total Fare:</label>
+                <input type="text" id="TotalFare" readonly>
+                <button type="button" id="pay">Pay</button>
+            </form>
+        </div>
+        <div class="schedule-info">
+            <h2>Bus Route and Bus Number</h2>
+            <ul>
+                <li>21G: Kilambakkam-  Broadway</li>
+                <li>500: Chengalpattu- Tambaram</li>
+                <li>E18: Guduvancheri- Broadway</li>
+                <li>70V: Kilambakkam - Vadapalani</li>
+                <li>V51X: Kilambakkam - Velachery</li>
+                <!-- Add more schedule information -->
+            </ul>
+        </div>
+    </section>
+    
+
+    <section id="payment-section" class="section payment-section" style="display:none;">
+        <h2>Select Payment Method</h2>
+        <form id="payment-form">
+            <label for="PayTM">PayTM</label>
+            <input type="radio" id="PayTM" name="payment-method" value="PayTM">
+            <br>
+            <label for="Gpay">Gpay</label>
+            <input type="radio" id="Gpay" name="payment-method" value="Gpay">
+            <br>
+            <label for="bank-transfer">Bank Transfer</label>
+            <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+            <br>
+            <label for="Wallet">wallet</label>
+            <input type="radio" id="Wallet" name="payment-method" value="Wallet">
+            <br>
+            <button type="submit">Proceed to Pay</button>
+        </form>
+    </section>
+
+    <script>
+        document.getElementById('pay').addEventListener('click', function() {
+            // Hide the booking form and show the payment options section
+            document.getElementById('booking-section').style.display = 'none';
+            document.getElementById('payment-section').style.display = 'block';
+        });
+    </script>
+
+    
+
+        
+
+    <section id="wallet-section" class="section wallet-section">
+        <div class="Recharge">
+            <h2>Recharge Wallet</h2>
+            <form id="RechargeWallet">
+                <label for="EnterAmount">Enter Amount:</label>
+                <input type="number" id="EnterAmount" required>
+                <button type="button" id="Recharge">Recharge</button>
+                
+            </form>
+        </div>
+
+    <section id="payment1-section" class="section payment1-section" style="display:none;">
+            <h2>Select Payment Method</h2>
+            <form id="payment-form">
+                <label for="PayTM">PayTM</label>
+                <input type="radio" id="PayTM" name="payment-method" value="PayTM">
+                <br>
+                <label for="Gpay">Gpay</label>
+                <input type="radio" id="Gpay" name="payment-method" value="Gpay">
+                <br>
+                <label for="bank-transfer">Bank Transfer</label>
+                <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+                <br>
+                <label for="RazorPay">RazorPay</label>
+                <input type="radio" id="RazorPay" name="payment-method" value="RazorPay">
+                <br>
+                <button type="submit">Proceed to Pay</button>
+            </form>
+    </section>
+    
+    <script>
+        document.getElementById('Recharge').addEventListener('click', function() {
+                  // Hide the booking form and show the payment options section
+                  document.getElementById('payment1-section').style.display = 'block';
+              });
+          </script>
+        <div class="Check">
+            <h2>Check Balance</h2>
+            <form id="CheckBalance">
+                <label for="balance-display">Balance:</label>
+                <input type="text" id="balance-display" value="100" readonly>
+                <br>
+                <button type="button" id="check-balance-btn">Check</button>
+            </form>
+        </div>
+
+    </section>
+
+
+    
+    
+    <section id="tracking-section" class="section tracking-section">
+        <div class="Live Tracking">
+            <h2>Track your bus</h2>
+            <form id="LiveTracking">
+                <label for="EnterDestination">Enter Your Destination or Bus Number:</label>
+                <input type="text" id="EnterDestination" required>
+                <button type="button" id="search">Search</button>
+                <label for="BusesAroundYou">Buses Around You:</label>
+                <div id="location"></div>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+// Get all navigation links
+const navLinks = document.querySelectorAll('.nav-link');
+
+// Add click event listener to each navigation link
+navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // Remove active class from all links
+        navLinks.forEach(navLink => navLink.classList.remove('active'));
+        // Add active class to the clicked link
+        this.classList.add('active');
+    });
+});
+</script>
+
+<script>
+const map = L.map('map'); 
+// Initializes map
+map.setView([51.505, -0.09], 13); 
+// Sets initial coordinates and zoom level
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+maxZoom: 19,
+attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map); 
+// Sets map data source and associates with map
+let marker, circle, zoomed;
+navigator.geolocation.watchPosition(success, error);
+function success(pos) {
+const lat = pos.coords.latitude;
+const lng = pos.coords.longitude;
+const accuracy = pos.coords.accuracy;
+if (marker) {
+map.removeLayer(marker);
+map.removeLayer(circle);
+}
+// Removes any existing marker and circule (new ones about to be set)
+marker = L.marker([lat, lng]).addTo(map);
+circle = L.circle([lat, lng], { radius: accuracy }).addTo(map);
+// Adds marker to the map and a circle for accuracy
+if (!zoomed) {
+zoomed = map.fitBounds(circle.getBounds()); 
+}
+// Set zoom to boundaries of accuracy circle
+map.setView([lat, lng]);
+// Set map focus to current user position
+}
+function error(err) {
+if (err.code === 1) {
+alert("Please allow geolocation access");
+} else {
+alert("Cannot get current location");
+}
+}
+</script>
+
+<script>
+    // Function to get user's location
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    // Function to display user's position
+    function showPosition(position) {
+        document.getElementById("location").innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        // Send this data to your backend using AJAX or any other method
+    }
+
+    // Call the getLocation function when the page loads
+    window.onload = getLocation;
+
+    // Event listener for checking balance
+    document.getElementById("check-balance-btn").addEventListener("click", async () => {
+        try {
+            const response = await fetch('http://localhost:3000/check-balance');
+            const data = await response.json();
+            document.getElementById("balance-display").value = `Your balance: ${data.balance} Rs`;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    // Event listener for calculating fare
+    const fareMatrix = {
+    "CityA": { "CityB": 10, "CityC": 15 },
+    "CityB": { "CityA": 10, "CityC": 20 },
+    "CityC": { "CityA": 15, "CityB": 20 },
+};
+
+function calculateFare(from, to) {
+    if (fareMatrix[from] && fareMatrix[from][to]) {
+        return fareMatrix[from][to];
+    } else {
+        alert('No fare data available for the selected route.');
+        return 0;
+    }
+}
+
+document.getElementById('calculate-fare').addEventListener('click', function() {
+    const from = document.getElementById('From').value;
+    const to = document.getElementById('To').value;
+    const numberOfPersons = document.getElementById('NumberOfPersons').value;
+
+    if (from && to && numberOfPersons) {
+        const farePerPerson = calculateFare(from, to);
+        const totalFare = farePerPerson * numberOfPersons;
+        document.getElementById('TotalFare').value = totalFare;
+    } else {
+        alert('Please fill in all fields.');
+    }
+});
+
+document.getElementById('pay').addEventListener('click', function() {
+    const from = document.getElementById('From').value;
+    const to = document.getElementById('To').value;
+    const numberOfPersons = document.getElementById('NumberOfPersons').value;
+    const totalFare = document.getElementById('TotalFare').value;
+
+    if (from && to && numberOfPersons && totalFare) {
+        alert(`Booking confirmed from ${from} to ${to} for ${numberOfPersons} persons. Total Fare: $${totalFare}`);
+    } else {
+        alert('Please fill all the fields and calculate the fare before proceeding to payment.');
+    }
+});
+
+
+
+    document.getElementById("recharge").addEventListener("click", async () => {
+        const amount = document.getElementById("EnterAmount").value;
+        try {
+            // Recharge wallet by sending amount to backend
+            const response = await fetch('http://localhost:3000/recharge-wallet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount })
+            });
+            const data = await response.json();
+            // Display message
+            alert(data.message);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    // Event listener for paying fare
+    document.getElementById("pay").addEventListener("click", async () => {
+        const fare = document.getElementById("TotalFare").value;
+        try {
+            const response = await fetch('http://localhost:3000/pay-fare', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ fare })
+            });
+            const data = await response.json();
+            document.getElementById("balance-display").value = `Your balance: ${data.balance} Rs`;
+            alert(data.message);
+        }
+
+
+        catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+</script>
+
+    
+</body>
+</html>
